@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Gjirafa50</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container">
+          <a class="navbar-brand" href="#">Gjirafa50</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">Cart (<span id="cart_total">0</span>)</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container my-5" id="products"> 
+      </div>
+
+
+      <!-- Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="cartModalLabel">Cart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="cart-items">
+                items
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script>
+        let cart = []
+        const cartModal = document.getElementById('cartModal')
+        const products = [
+            {title: "Televizor Philips 65PUS8506 - 65 \" (164cm), 4K UHD, i argjendtë", price: 799.50, qty: 10, description: 'Televizior LED SMART 65 " me rezolucion 4K (3840 x 2610 px) dhe diagonale 164 cm. Ambilight në të tre anët, ngjyrë e integruar Ambilight +, modaliteti i lojës, modaliteti lounge dhe përputhja e ngjyrave të murit. Përmirësimi i imazhit me Dolby Vision, HDR10 +, HLG, Pro mikro errësimi. Televiziori ka sistem operativ Android TV 10.', image: 'https://hhstsyoejx.gjirafa.net/gj50/img/168284/img/0.jpg'},
+            {title: "Monitor Dell Alienware AW2521HFLA - 24,5'' LED", price: 329.50, qty: 100, description: 'Monitori Dell Alienware AW2521HFLA është i dizajnuar posaçërisht për të apasionuar të lojërave. Vjen me një diagonale prej 24.5" me kualitet Full HD dhe rezolucion 1920 x 1080 pikselë, me të cilin shfaq imazhe superiore me ngjyra të ndezura dhe tejet reale, me altoparlantë të integruar që ju mundësojnë që të përjeton çdo goditje e lëvizje sikurse të ishit me të vërtet aty, si dhe teknologji Flicker Reduction që ju mbron sytë edhe nga orët e gjata të shikimit. Mbështet poashtu teknologjitë si IPS dhe Blue light reduction. Veçanti të këtij monitori janë edhe mundësitë e lidhjes përmes porteve DisplayPort, USB dhe HDMI.?', image: 'https://hhstsyoejx.gjirafa.net/gj50/img/149608/img/0.jpg'},
+            {title: 'Kompjuter ASUS ROG Strix G35CG', price: 1250.80, qty: 5, description: 'Kompjuteri ASUS ROG Strix G35CG përdor një procesor Intel Core i9-11900KF me 8 bërthama, i cili përmban teknologjinë HyperThreading për multitasking më të lehtë me aftësinë për të përpunuar deri në 2 procese në të njëjtën kohë në një bërthamë të vetme dhe është i frekuentuar në 3.5 GHz ose deri në 5 GHz kur. overclocking në modalitetin e rritjes. Kompjuteri vjen me 32 GB', image: 'https://hhstsyoejx.gjirafa.net/gj50/img/183793/img/0.jpg'},
+        ]
+        
+        window.onload = function() {
+            cart = [...storageToCart()]
+            document.getElementById('cart_total').textContent = cart.length
+            displayProducts(products, document.getElementById('products'))
+        }
+
+        function displayProducts(products, parent_elem) {
+            let content = ``;
+
+            if(products.length === 0) {
+                content = '<p>0 products</p>'
+            }
+
+            if(products.length > 0) {
+                products.forEach((product, index) => {
+                    content += `
+                    <div class="card">
+                        <img src="${product.image}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">${product.title}</h5>
+                            <p class="card-text">${product.price} EUR</p>
+                            <form action="#" onsubmit="addToCart(event, ${index}, qty)">
+                                <input type="number" id="qty" class="form-control" min="1" max="${product.qty}" value="1" />
+                                <input type="hidden" id="index" value="${index}" />
+                                <button type="submit" class="btn btn-sm btn-outline-primary">+</buttton>
+                            </form>
+                        </div>
+                    </div>         
+                    `
+                });
+            }
+
+            parent_elem.innerHTML = content
+        }
+
+        function addToCart(event, index, qty) {
+            event.preventDefault()
+            cart = [...cart, {...products[index], qty: qty.value}]
+            updateCart()
+        }
+
+        function updateCart() {
+            document.getElementById('cart_total').textContent = cart.length
+            cartToStorage()
+        }
+
+        function displayCartItems() {
+            const cart_items_div = document.getElementById('cart-items')
+            
+            if(cart.length > 0) {
+                let items = `<table class='table table-bordered'>`
+                let total = 0.0
+
+                cart.forEach((item, index) => {
+                    items += `
+                    <tr>
+                        <td>${item.title}</td>
+                        <td>${item.qty}</td>
+                        <td>${item.price}</td>
+                        <td>${item.qty * item.price}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteCartItem(${index})">x</button>
+                        </td>
+                    </tr>
+                    `
+
+                    total += (item.qty * item.price)
+                })
+
+                items += `<tr><td colspan="3"></td><td>${total}</td><td></td>`
+                items += `</table>`
+
+                cart_items_div.innerHTML = items
+            } else {
+                cart_items_div.innerHTML = 'Cart is empty!'
+            }
+        }
+
+        function deleteCartItem(index) {
+            cart.splice(index, 1)
+            displayCartItems()
+            updateCart()
+        }
+
+        cartModal.addEventListener('show.bs.modal', event => {
+            displayCartItems()
+        })
+        
+        function cartToStorage() {
+            localStorage.setItem("cart", JSON.stringify(cart))
+        }
+
+        function storageToCart() {
+            return JSON.parse(localStorage.getItem("cart") || "[]")
+        }
+    </script>
+</body>
+</html>

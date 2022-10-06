@@ -1,0 +1,23 @@
+#products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+    margin: 10px;
+}
+
+.card img {
+    width: auto !important;
+    height: 120px;
+    display: block;
+    margin: 30px auto;
+}
+
+form {
+    display: flex;
+}
+
+button {
+    margin-left: 10px;
+}
